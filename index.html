@@ -1,269 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- css -->
-     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/main.css" />
 
     <!-- alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
     <!-- feather icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
     <title>Panel administrativo - Grid</title>
-</head>
+  </head>
 
-<body>
-    <main 
-        class="panel"
-        x-data="{ 
+  <body>
+    <main
+      class="panel"
+      x-data="{
             menuOpen: false,
             toggleMenu() { this.menuOpen = ! this.menuOpen},
-        }">
+        }"
+    >
+      <!-- cabecera principal -->
+      <header class="header">
+        <button
+          type="button"
+          class="btn-menu"
+          @click="toggleMenu"
+          title="abrir menu"
+        >
+          <i data-feather="menu" class="icon"></i>
+        </button>
+        <div class="header__title">
+          <h1 class="system">mi negocio</h1>
+          <div class="header__actions">
+            <!-- dropdown usuario -->
+            <article
+              x-data="{
+                                open: false,
+                                toggle() {
+                                    this.open = this.open ? this.close() : true
+                                },
+                                close() {
+                                    this.open = false
+                                },
+                            }"
+              x-id="['dropdown-button']"
+              @keydown.escape.prevent.stop="close()"
+              @focusin.window="! $refs.panel.contains($event.target) && close()"
+              class="dropdown-wrapper"
+            >
+              <i data-feather="user" class="icon"></i>
+              <button
+                type="button"
+                @click="toggle()"
+                :aria-expanded="open"
+                :aria-controls="$id('dropdown-button')"
+                class="dropdown-button"
+              >
+                <i data-feather="chevron-down" class="icon"></i>
+              </button>
+              <!-- dropdown content -->
+              <div
+                x-ref="panel"
+                x-show="open"
+                :id="$id('dropdown-button')"
+                @click.outside="toggle()"
+                class="dropdown-wrapper__content"
+              >
+                <a href="#" class="dropdown-wrapper__link">mi perfil</a>
+                <a href="#" class="dropdown-wrapper__link">configuración</a>
+                <hr class="dropdown-wrapper__divider" />
+                <a href="#" class="dropdown-wrapper__link">cerrar sesión</a>
+              </div>
+            </article>
+            <!-- dropdown notificaciones -->
+            <article
+              x-data="{
+                                open: false,
+                                toggle() {
+                                    this.open = this.open ? this.close() : true
+                                },
+                                close() {
+                                    this.open = false
+                                },
+                            }"
+              x-id="['dropdown-button']"
+              @keydown.escape.prevent.stop="close()"
+              @focusin.window="! $refs.panel.contains($event.target) && close()"
+              class="dropdown-wrapper"
+            >
+              <i data-feather="bell" class="icon"></i>
+              <button
+                type="button"
+                @click="toggle()"
+                :aria-expanded="open"
+                :aria-controls="$id('dropdown-button')"
+                class="dropdown-button"
+              >
+                <i data-feather="chevron-down" class="icon"></i>
+              </button>
+              <!-- dropdown content -->
+              <div
+                x-ref="panel"
+                x-show="open"
+                :id="$id('dropdown-button')"
+                @click.outside="toggle()"
+                class="dropdown-wrapper__content dropdown-wrapper__content--lg"
+              >
+                <!-- notification -->
+                <article class="notification">
+                  <div class="notification__header">
+                    <id data-feather="mail" class="icon"></id>
+                    <p>un nuevo mensaje!</p>
+                  </div>
+                  <a href="#" class="notification__action">ver</a>
+                </article>
+              </div>
+            </article>
+          </div>
+        </div>
+      </header>
 
-        <!-- cabecera principal -->
-        <header class="header">
-            <button type="button" class="btn-menu" @click="toggleMenu" title="abrir menu">
-                <i data-feather="menu" class="icon"></i>
-            </button>
-            <div class="header__title">
-                <h1 class="system">mi negocio</h1>
-                <div class="header__actions">
-                    <!-- dropdown usuario -->
-                    <article 
-                            x-data="{
-                                open: false,
-                                toggle() { 
-                                    this.open = this.open ? this.close() : true 
-                                },
-                                close() { 
-                                    this.open = false 
-                                },  
-                            }"
-                            x-id="['dropdown-button']"
-                            @keydown.escape.prevent.stop="close()"
-                            @focusin.window="! $refs.panel.contains($event.target) && close()"
-                            class="dropdown-wrapper"
-                        >
-                        <i data-feather="user" class="icon"></i>
-                        <button
-                                type="button"
-                                @click="toggle()"
-                                :aria-expanded="open"
-                                :aria-controls="$id('dropdown-button')"
-                                class="dropdown-button"
-                            >
-                            <i data-feather="chevron-down" class="icon"></i>
-                        </button>
-                        <!-- dropdown content -->
-                        <div 
-                                x-ref="panel"
-                                x-show="open"
-                                :id="$id('dropdown-button')"
-                                @click.outside="toggle()"
-                                class="dropdown-wrapper__content"
-                            >
-                            <a href="#" class="dropdown-wrapper__link">mi perfil</a>
-                            <a href="#" class="dropdown-wrapper__link">configuración</a>
-                            <hr class="dropdown-wrapper__divider">
-                            <a href="#" class="dropdown-wrapper__link">cerrar sesión</a>
-                        </div>
-                    </article>
-                    <!-- dropdown notificaciones -->
-                    <article 
-                            x-data="{
-                                open: false,
-                                toggle() { 
-                                    this.open = this.open ? this.close() : true 
-                                },
-                                close() { 
-                                    this.open = false 
-                                },  
-                            }"
-                            x-id="['dropdown-button']"
-                            @keydown.escape.prevent.stop="close()"
-                            @focusin.window="! $refs.panel.contains($event.target) && close()"
-                            class="dropdown-wrapper"
-                        >
-                        <i data-feather="bell" class="icon"></i>
-                        <button
-                                type="button"
-                                @click="toggle()"
-                                :aria-expanded="open"
-                                :aria-controls="$id('dropdown-button')"
-                                class="dropdown-button"
-                            >
-                            <i data-feather="chevron-down" class="icon"></i>
-                        </button>
-                        <!-- dropdown content -->
-                        <div 
-                                x-ref="panel"
-                                x-show="open"
-                                :id="$id('dropdown-button')"
-                                @click.outside="toggle()"
-                                class="dropdown-wrapper__content dropdown-wrapper__content--lg"
-                            >
-                            <!-- notification -->
-                            <article class="notification">
-                                <div class="notification__header">
-                                    <id data-feather="mail" class="icon"></id>
-                                    <p>un nuevo mensaje!</p>
-                                </div>
-                                <a href="#" class="notification__action">ver</a>
-                            </article>
-                        </div>
-                    </article>
-                </div>
-            </div>
+      <!-- menu lateral -->
+      <aside class="menu" :class="menuOpen ? '' : 'menu--closed' ">
+        <header class="menu__header">
+          <button
+            type="button"
+            class="btn-menu"
+            @click="toggleMenu"
+            title="cerrar menú"
+          >
+            <i data-feather="x" class="icon"></i>
+          </button>
         </header>
-
-        <!-- menu lateral -->
-        <aside 
-            class="menu"
-            :class="menuOpen ? '' : 'menu--closed' "
-            >        
-            <header class="menu__header">
-                <button type="button" class="btn-menu" @click="toggleMenu" title="cerrar menú">
-                    <i data-feather="x" class="icon"></i>
-                </button>
-            </header>
-            <div class="menu__title">
-                <span class="menu__text">menu</span>
-            </div>      
-            <section class="menu__content">
-                <ul class="menu__list">
-                    <li class="menu__item">
-                        <i data-feather="home" class="icon"></i>
-                        inicio
-                    </li>
-                    <li class="menu__item">
-                        <i data-feather="clipboard" class="icon"></i>
-                        inventario
-                    </li>
-                    <li class="menu__item">
-                        <i data-feather="box" class="icon"></i>
-                        productos
-                    </li>
-                    <li class="menu__item">
-                        <i data-feather="users" class="icon"></i>
-                        clientes
-                    </li>
-                    <li class="menu__item">
-                        <i data-feather="truck" class="icon"></i>
-                        proveedores
-                    </li>
-                    <li class="menu__item">
-                        <i data-feather="settings" class="icon"></i>
-                        ajustes
-                    </li>
-                </ul>
-            </section>
-        </aside>
-
-        <!-- contenido principal -->
-        <section class="content">
-
-            <article class="card card--md">
-                <header class="card__header">
-                    <h2 class="card__title">Inventario</h2>
-                    <i data-feather="clipboard" class="card__icon"></i>
-                    <p class="card__subtitle">Estado del inventario.</p>
-                </header>
-                <section class="card__content">
-                    <span>contenido del card</span>
-                </section>
-                <footer class="card__footer">
-                    <span>última actualización: hace 1 minuto.</span>
-                </footer>
-            </article>
-
-            <article class="card card--md">
-                <header class="card__header">
-                    <h2 class="card__title">Notificaciones</h2>
-                    <i data-feather="bell" class="card__icon"></i>
-                    <p class="card__subtitle">Últimas notificaciones.</p>
-                </header>
-                <section class="card__content">
-                    <span>contenido del card</span>
-                </section>
-                <footer class="card__footer">
-                    <span>última actualización: hace 1 minuto.</span>
-                </footer>
-            </article>
-
-            <article class="card">
-                <header class="card__header">
-                    <h2 class="card__title">Productos</h2>
-                    <i data-feather="box" class="card__icon"></i>
-                    <p class="card__subtitle">Estado de productos.</p>
-                </header>
-                <section class="card__content">
-                    <span>contenido del card</span>
-                </section>
-                <footer class="card__footer">
-                    <span>última actualización: hace 1 minuto.</span>
-                </footer>
-            </article>
-
-            <article class="card">
-                <header class="card__header">
-                    <h2 class="card__title">Clientes</h2>
-                    <i data-feather="users" class="card__icon"></i>
-                    <p class="card__subtitle">Estado de los clientes.</p>
-                </header>
-                <section class="card__content">
-                    <span>contenido del card</span>
-                </section>
-                <footer class="card__footer">
-                    <span>última actualización: hace 1 minuto.</span>
-                </footer>
-            </article>
-
-            <article class="card">
-                <header class="card__header">
-                    <h2 class="card__title">Proveedores</h2>
-                    <i data-feather="truck" class="card__icon"></i>
-                    <p class="card__subtitle">Estado de los proveedores.</p>
-                </header>
-                <section class="card__content">
-                    <span>contenido del card</span>
-                </section>
-                <footer class="card__footer">
-                    <span>última actualización: hace 1 minuto.</span>
-                </footer>
-            </article>
-
-            <article class="card card--md card--lg">
-                <header class="card__header">
-                    <h2 class="card__title">Estadisticas</h2>
-                    <i data-feather="bar-chart-2" class="card__icon"></i>
-                    <p class="card__subtitle">Estadisticas del sistema.</p>
-                </header>
-                <section class="card__content">
-                    <span>contenido del card</span>
-                </section>
-                <footer class="card__footer">
-                    <span>última actualización: hace 1 minuto.</span>
-                </footer>
-            </article>
-
+        <div class="menu__title">
+          <span class="menu__text">menu</span>
+        </div>
+        <section class="menu__content">
+          <ul class="menu__list">
+            <li class="menu__item">
+              <i data-feather="home" class="icon"></i>
+              inicio
+            </li>
+            <li class="menu__item">
+              <i data-feather="clipboard" class="icon"></i>
+              inventario
+            </li>
+            <li class="menu__item">
+              <i data-feather="box" class="icon"></i>
+              productos
+            </li>
+            <li class="menu__item">
+              <i data-feather="users" class="icon"></i>
+              clientes
+            </li>
+            <li class="menu__item">
+              <i data-feather="truck" class="icon"></i>
+              proveedores
+            </li>
+            <li class="menu__item">
+              <i data-feather="settings" class="icon"></i>
+              ajustes
+            </li>
+          </ul>
         </section>
+      </aside>
 
-        <!-- pie -->
-        <footer class="footer">
-            <span class="subtext">Hecho con mate 🧉 por <a href="https://osvaldo-zakowicz.netlify.app/" class="link" target="__blank">Osvaldo Zakowicz</a> </span>
-            <span class="subtext" x-data="{ message: 'I ❤️ Alpine' }" x-text="message"></span>
-            <span class="subtext">Iconos cortesia de <a href="https://feathericons.com/" class="link" target="__blank">Feather</a></span>
-        </footer>
+      <!-- contenido principal -->
+      <section class="content">
+        <article class="card card--md">
+          <header class="card__header">
+            <h2 class="card__title">Inventario</h2>
+            <i data-feather="clipboard" class="card__icon"></i>
+            <p class="card__subtitle">Estado del inventario.</p>
+          </header>
+          <section class="card__content">
+            <span>contenido del card</span>
+          </section>
+          <footer class="card__footer">
+            <span>última actualización: hace 1 minuto.</span>
+          </footer>
+        </article>
 
+        <article class="card card--md">
+          <header class="card__header">
+            <h2 class="card__title">Notificaciones</h2>
+            <i data-feather="bell" class="card__icon"></i>
+            <p class="card__subtitle">Últimas notificaciones.</p>
+          </header>
+          <section class="card__content">
+            <span>contenido del card</span>
+          </section>
+          <footer class="card__footer">
+            <span>última actualización: hace 1 minuto.</span>
+          </footer>
+        </article>
+
+        <article class="card">
+          <header class="card__header">
+            <h2 class="card__title">Productos</h2>
+            <i data-feather="box" class="card__icon"></i>
+            <p class="card__subtitle">Estado de productos.</p>
+          </header>
+          <section class="card__content">
+            <span>contenido del card</span>
+          </section>
+          <footer class="card__footer">
+            <span>última actualización: hace 1 minuto.</span>
+          </footer>
+        </article>
+
+        <article class="card">
+          <header class="card__header">
+            <h2 class="card__title">Clientes</h2>
+            <i data-feather="users" class="card__icon"></i>
+            <p class="card__subtitle">Estado de los clientes.</p>
+          </header>
+          <section class="card__content">
+            <span>contenido del card</span>
+          </section>
+          <footer class="card__footer">
+            <span>última actualización: hace 1 minuto.</span>
+          </footer>
+        </article>
+
+        <article class="card">
+          <header class="card__header">
+            <h2 class="card__title">Proveedores</h2>
+            <i data-feather="truck" class="card__icon"></i>
+            <p class="card__subtitle">Estado de los proveedores.</p>
+          </header>
+          <section class="card__content">
+            <span>contenido del card</span>
+          </section>
+          <footer class="card__footer">
+            <span>última actualización: hace 1 minuto.</span>
+          </footer>
+        </article>
+
+        <article class="card card--md card--lg">
+          <header class="card__header">
+            <h2 class="card__title">Estadisticas</h2>
+            <i data-feather="bar-chart-2" class="card__icon"></i>
+            <p class="card__subtitle">Estadisticas del sistema.</p>
+          </header>
+          <section class="card__content">
+            <span>contenido del card</span>
+          </section>
+          <footer class="card__footer">
+            <span>última actualización: hace 1 minuto.</span>
+          </footer>
+        </article>
+      </section>
+
+      <!-- pie -->
+      <footer class="footer">
+        <span class="subtext"
+          >Hecho con mate 🧉 por
+          <a
+            href="https://osvaldo-zakowicz.netlify.app/"
+            class="link"
+            target="__blank"
+            >Osvaldo Zakowicz</a
+          >
+        </span>
+        <span
+          class="subtext"
+          x-data="{ message: 'I ❤️ Alpine' }"
+          x-text="message"
+        ></span>
+        <span class="subtext"
+          >Iconos cortesia de
+          <a href="https://feathericons.com/" class="link" target="__blank"
+            >Feather</a
+          ></span
+        >
+      </footer>
     </main>
 
     <script>
-        feather.replace();
+      feather.replace();
     </script>
-</body>
-
+  </body>
 </html>
