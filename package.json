@@ -1,0 +1,13 @@
+{
+  "name": "dashboard-grid",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tailwindcss -i ./css/main.css -o ./dist/main.css --minify",
+    "watch": "tailwindcss -i ./css/main.css -o ./dist/main.css --watch=always"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.0.0",
+    "@tailwindcss/cli": "^4.0.0"
+  }
+}

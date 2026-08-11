@@ -10,6 +10,6 @@ Thumbs.db
 .idea/
 *.swp
 
-# Node (por si se agrega tooling más adelante)
+# Node tooling (Tailwind CSS CLI)
 node_modules/
 dist/
