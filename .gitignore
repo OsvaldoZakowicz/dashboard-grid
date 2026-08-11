@@ -1,0 +1,15 @@
+# Carpeta de orquestación (herramientas locales)
+.atl/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores / IDE
+.vscode/
+.idea/
+*.swp
+
+# Node (por si se agrega tooling más adelante)
+node_modules/
+dist/
