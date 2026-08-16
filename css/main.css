@@ -1,2 +1,33 @@
 @import "tailwindcss";
 @source "../*.html";
+
+/* ============================================================
+   Monochrome Harmony — design tokens (spec: design-tokens DT-2)
+   Única fuente de verdad: css/main.css (@theme, SB-2/DT-1).
+   ============================================================ */
+@theme {
+  /* Paleta cruda — hexes exactos de DT-2 (sin literales fuera de aquí) */
+  --color-ivory: #e8eddf; /* superficie más clara (fondo de página) */
+  --color-dust-grey: #cfdbd5; /* superficie secundaria (tarjetas, bandas) */
+  --color-tuscan-sun: #f5cb5c; /* acento (badges, highlights) — solo texto oscuro */
+  --color-shadow-grey: #242423; /* superficie/texto más oscuro */
+  --color-graphite: #333533; /* superficie/texto oscuro secundario */
+  --color-white: #ffffff; /* tarjetas sobre superficies oscuras, contraste */
+
+  /* Aliases semánticos — referencian la paleta vía var() (sin literales, DT-2) */
+  --color-surface: var(--color-ivory); /* bg-surface */
+  --color-surface-raised: var(--color-dust-grey); /* bg-surface-raised */
+  --color-ink: var(--color-shadow-grey); /* text-ink */
+  --color-ink-soft: var(--color-graphite); /* text-ink-soft */
+  --color-accent: var(--color-tuscan-sun); /* bg-accent — solo texto oscuro (DT-3) */
+  --color-on-dark: var(--color-white); /* text-on-dark */
+
+  /* Elevación (DT-5) */
+  --shadow-card: 0 1px 3px rgb(36 36 35 / 0.1);
+  --shadow-popover: 0 10px 25px rgb(36 36 35 / 0.18);
+  --shadow-focus-ring: 0 0 0 3px var(--color-graphite);
+}
+
+/* Modo oscuro fuera de alcance: variante fijada a data-theme (DT-6),
+   nunca a prefers-color-scheme */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));

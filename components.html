@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- css compilado (npm run build → dist/main.css, no se commitea) -->
+    <link rel="stylesheet" href="./dist/main.css" />
+    <!-- alpine.js (CDN, como el proyecto actual) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- feather icons (CDN) -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <title>Showcase de componentes — Monochrome Harmony</title>
+  </head>
+  <body class="bg-surface text-ink">
+    <!-- ========== Cabecera (UC-4): white sobre graphite; icon-only con aria-label ========== -->
+    <header class="bg-graphite text-on-dark">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <div class="flex items-center gap-2">
+          <i data-feather="grid" class="h-6 w-6" aria-hidden="true"></i>
+          <span class="text-xl font-semibold tracking-tight">mi negocio</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Dropdown usuario (UC-2: un único patrón, Alpine.data('dropdown')) -->
+          <div x-data="dropdown" @keydown.escape.window="close()" @click.outside="close()" class="relative">
+            <button type="button" @click="toggle()" :aria-expanded="open" :aria-controls="$id('menu')"
+              aria-label="Abrir menú de usuario"
+              class="inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-shadow-grey active:bg-ink-soft focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_var(--color-on-dark)]">
+              <i data-feather="user" class="h-[18px] w-[18px]" aria-hidden="true"></i>
+            </button>
+            <div role="menu" x-show="open" :id="$id('menu')"
+              class="absolute right-0 z-10 mt-2 w-48 rounded-xl border border-dust-grey bg-on-dark p-1 text-ink shadow-popover">
+              <a role="menuitem" href="#" class="block rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">mi perfil</a>
+              <a role="menuitem" href="#" class="block rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">configuración</a>
+              <hr class="my-1 border-dust-grey" />
+              <a role="menuitem" href="#" class="block rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">cerrar sesión</a>
+            </div>
+          </div>
+          <!-- Dropdown notificaciones (UC-2 + UC-10/SB-6: x-for + x-effect re-render) -->
+          <div x-data="notifications" @keydown.escape.window="close()" @click.outside="close()" class="relative">
+            <button type="button" @click="toggle()" :aria-expanded="open" :aria-controls="$id('menu')"
+              aria-label="Ver notificaciones"
+              class="relative inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-shadow-grey active:bg-ink-soft focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_var(--color-on-dark)]">
+              <i data-feather="bell" class="h-[18px] w-[18px]" aria-hidden="true"></i>
+              <span class="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-ink" x-text="items.length"></span>
+            </button>
+            <div role="menu" x-show="open" :id="$id('menu')" x-effect="items; feather.replace()"
+              class="absolute right-0 z-10 mt-2 w-80 rounded-xl border border-dust-grey bg-on-dark p-1 text-ink shadow-popover">
+              <template x-for="n in items" :key="n.id">
+                <a role="menuitem" :href="n.href"
+                  class="flex items-start gap-2 rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">
+                  <i :data-feather="n.icon" aria-hidden="true" class="mt-0.5 h-4 w-4 shrink-0 text-ink-soft"></i>
+                  <span x-text="n.text" class="flex-1 leading-relaxed"></span>
+                </a>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl space-y-12 px-4 py-10">
+      <!-- ========== Introducción ========== -->
+      <section class="max-w-2xl space-y-2">
+        <p class="text-xs font-medium uppercase tracking-wide text-ink-soft">Showcase de componentes</p>
+        <h1 class="text-2xl font-semibold leading-snug tracking-tight">Monochrome Harmony</h1>
+        <p class="text-sm leading-relaxed">
+          Sistema de diseño estático sobre Tailwind CSS v4. Tokens en <code class="rounded bg-dust-grey px-1 text-xs">css/main.css</code>
+          (@theme), markup portable con utilitarios, Alpine solo para comportamiento y Feather para iconos.
+          Pares de contraste conforme a DT-3 (WCAG 2.1 AA).
+        </p>
+      </section>
+
+      <!-- ========== Paleta y contraste (DT-2 / DT-3) ========== -->
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold leading-snug tracking-tight">Paleta y contraste</h2>
+        <p class="text-sm leading-relaxed">
+          Seis colores crudos (DT-2) y sus pares de texto/fondo válidos. El acento (Tuscan Sun) solo admite
+          texto oscuro: 10.05:1 con Shadow Grey; blanco sobre acento queda prohibido (1.55:1).
+        </p>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-lg border border-dust-grey bg-ivory p-4 shadow-card">
+            <p class="text-sm font-semibold">Ivory <span class="text-xs font-normal text-ink-soft">#e8eddf</span></p>
+            <p class="mt-1 text-xs text-ink-soft">Superficie principal (fondo de página)</p>
+            <p class="mt-3 text-sm">Shadow Grey sobre Ivory — 13.03:1 ✓</p>
+          </div>
+          <div class="rounded-lg bg-dust-grey p-4 shadow-card">
+            <p class="text-sm font-semibold">Dust Grey <span class="text-xs font-normal text-ink-soft">#cfdbd5</span></p>
+            <p class="mt-1 text-xs text-ink-soft">Superficie secundaria (tarjetas)</p>
+            <p class="mt-3 text-sm">Shadow Grey sobre Dust Grey — 10.91:1 ✓</p>
+          </div>
+          <div class="rounded-lg bg-tuscan-sun p-4 shadow-card">
+            <p class="text-sm font-semibold">Tuscan Sun <span class="text-xs font-normal">#f5cb5c</span></p>
+            <p class="mt-1 text-xs">Acento — solo texto oscuro (DT-3)</p>
+            <p class="mt-3 text-sm">Shadow Grey sobre Tuscan Sun — 10.05:1 ✓</p>
+            <p class="mt-1 text-xs text-on-dark line-through">blanco prohibido — 1.55:1 ✗</p>
+          </div>
+          <div class="rounded-lg bg-shadow-grey p-4 text-on-dark shadow-card">
+            <p class="text-sm font-semibold">Shadow Grey <span class="text-xs font-normal text-ivory">#242423</span></p>
+            <p class="mt-1 text-xs text-ivory">Superficie/texto más oscuro</p>
+            <p class="mt-3 text-sm">White sobre Shadow Grey — 15.54:1 ✓</p>
+          </div>
+          <div class="rounded-lg bg-graphite p-4 text-on-dark shadow-card">
+            <p class="text-sm font-semibold">Graphite <span class="text-xs font-normal text-ivory">#333533</span></p>
+            <p class="mt-1 text-xs text-ivory">Oscuro secundario (texto suave, cabecera)</p>
+            <p class="mt-3 text-sm">White sobre Graphite — 12.37:1 ✓</p>
+          </div>
+          <div class="rounded-lg border border-dust-grey bg-white p-4 shadow-card">
+            <p class="text-sm font-semibold">White <span class="text-xs font-normal text-ink-soft">#ffffff</span></p>
+            <p class="mt-1 text-xs text-ink-soft">Tarjetas sobre oscuro, on-dark</p>
+            <p class="mt-3 text-sm">Shadow Grey sobre White — 15.54:1 ✓</p>
+          </div>
+        </div>
+        <!-- Tabla de tokens (UC-12: token + valor + uso) -->
+        <div class="overflow-x-auto rounded-lg bg-white p-4 shadow-card">
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="border-b border-dust-grey text-xs uppercase tracking-wide text-ink-soft">
+                <th class="py-2 pr-4 font-semibold">Token</th>
+                <th class="py-2 pr-4 font-semibold">Valor</th>
+                <th class="py-2 font-semibold">Uso</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-dust-grey">
+              <tr><td class="py-2 pr-4">--color-surface</td><td class="py-2 pr-4">Ivory</td><td class="py-2">bg-surface</td></tr>
+              <tr><td class="py-2 pr-4">--color-surface-raised</td><td class="py-2 pr-4">Dust Grey</td><td class="py-2">bg-surface-raised</td></tr>
+              <tr><td class="py-2 pr-4">--color-ink</td><td class="py-2 pr-4">Shadow Grey</td><td class="py-2">text-ink</td></tr>
+              <tr><td class="py-2 pr-4">--color-ink-soft</td><td class="py-2 pr-4">Graphite</td><td class="py-2">text-ink-soft</td></tr>
+              <tr><td class="py-2 pr-4">--color-accent</td><td class="py-2 pr-4">Tuscan Sun</td><td class="py-2">bg-accent — texto ink/ink-soft</td></tr>
+              <tr><td class="py-2 pr-4">--color-on-dark</td><td class="py-2 pr-4">White</td><td class="py-2">text-on-dark / bg-on-dark</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== Tipografía (UC-11 / DT-4) ========== -->
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold leading-snug tracking-tight">Tipografía</h2>
+        <div class="rounded-lg bg-white p-6 shadow-card">
+          <p class="text-xs text-ink-soft">h1 — text-2xl font-semibold tracking-tight leading-snug</p>
+          <h3 class="text-2xl font-semibold leading-snug tracking-tight">Encabezado principal</h3>
+          <p class="mt-4 text-xs text-ink-soft">Título de tarjeta — text-lg font-semibold</p>
+          <h4 class="text-lg font-semibold leading-snug">Inventario</h4>
+          <p class="mt-4 text-xs text-ink-soft">Cuerpo — text-sm leading-relaxed tracking-normal</p>
+          <p class="text-sm leading-relaxed">Cuerpo de texto estándar: inventario actualizado, pedidos en tránsito y alertas de stock.</p>
+          <p class="mt-4 text-xs text-ink-soft">Subtexto / footer — text-xs</p>
+          <p class="text-xs">última actualización: hace 1 minuto</p>
+        </div>
+      </section>
+
+      <!-- ========== Botones (UC-7) ========== -->
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold leading-snug tracking-tight">Botones</h2>
+        <div class="rounded-lg bg-white p-6 shadow-card">
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- primario: white sobre graphite; hover oscurece a shadow grey (12.37:1 / 15.54:1) -->
+            <button type="button"
+              class="inline-flex items-center justify-center gap-2 rounded-md bg-graphite px-4 py-2 text-sm font-medium text-on-dark transition hover:bg-shadow-grey active:opacity-80 focus-visible:shadow-focus-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50">Guardar cambios</button>
+            <button type="button" disabled
+              class="inline-flex items-center justify-center gap-2 rounded-md bg-graphite px-4 py-2 text-sm font-medium text-on-dark transition hover:bg-shadow-grey active:opacity-80 focus-visible:shadow-focus-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50">Guardar cambios</button>
+            <!-- acento: Tuscan Sun + texto ink (10.05:1, DT-3) -->
+            <button type="button"
+              class="inline-flex items-center justify-center gap-2 rounded-md bg-tuscan-sun px-4 py-2 text-sm font-medium text-ink transition hover:bg-tuscan-sun/90 active:opacity-80 focus-visible:shadow-focus-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50">Publicar</button>
+            <!-- outline -->
+            <button type="button"
+              class="inline-flex items-center justify-center gap-2 rounded-md border border-graphite px-4 py-2 text-sm font-medium text-ink transition hover:bg-dust-grey active:opacity-80 focus-visible:shadow-focus-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50">Descartar</button>
+            <!-- ghost -->
+            <button type="button"
+              class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-ink transition hover:bg-dust-grey active:opacity-80 focus-visible:shadow-focus-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50">Cancelar</button>
+            <!-- icon-only con aria-label (UC-4) -->
+            <button type="button" aria-label="Agregar producto"
+              class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-graphite text-on-dark transition hover:bg-shadow-grey active:opacity-80 focus-visible:shadow-focus-ring focus-visible:outline-none">
+              <i data-feather="plus" class="h-4 w-4" aria-hidden="true"></i>
+            </button>
+          </div>
+          <p class="mt-4 text-xs text-ink-soft">
+            Estados: default / hover / active / focus-visible (anillo <code class="rounded bg-dust-grey px-1">shadow-focus-ring</code>,
+            3px Graphite sobre Ivory, DT-5) / disabled (opacidad reducida, no focusable, UC-7).
+            Probá con Tab para ver el anillo de foco.
+          </p>
+        </div>
+      </section>
+
+      <!-- ========== Badges y estados (UC-5) ========== -->
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold leading-snug tracking-tight">Badges y estados</h2>
+        <div class="rounded-lg bg-white p-6 shadow-card">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 py-0.5 text-xs font-semibold text-ink">3</span>
+            <span class="inline-flex min-w-5 items-center justify-center rounded-full bg-graphite px-1.5 py-0.5 text-xs font-semibold text-on-dark">12</span>
+            <span class="inline-flex min-w-5 items-center justify-center rounded-full bg-shadow-grey px-1.5 py-0.5 text-xs font-semibold text-on-dark">8</span>
+          </div>
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-tuscan-sun px-2.5 py-0.5 text-xs font-medium text-ink">
+              <span class="h-1.5 w-1.5 rounded-full bg-ink" aria-hidden="true"></span>Disponible</span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-dust-grey px-2.5 py-0.5 text-xs font-medium text-ink">
+              <span class="h-1.5 w-1.5 rounded-full bg-ink-soft" aria-hidden="true"></span>En revisión</span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-graphite px-2.5 py-0.5 text-xs font-medium text-on-dark">
+              <span class="h-1.5 w-1.5 rounded-full bg-on-dark" aria-hidden="true"></span>Agotado</span>
+          </div>
+          <p class="mt-4 text-xs text-ink-soft">
+            Badges ≥ 10px (text-xs) con pares DT-3 válidos. Sin el badge legacy blanco-sobre-rojo de 9px (4.0:1 fallaba).
+          </p>
+        </div>
+      </section>
+
+      <!-- ========== Tarjetas (UC-6) ========== -->
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold leading-snug tracking-tight">Tarjetas</h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <!-- tarjeta default: Dust Grey (surface-raised) -->
+          <article class="flex flex-col rounded-lg bg-surface-raised p-5 shadow-card">
+            <header class="flex items-center gap-2">
+              <i data-feather="clipboard" class="h-4 w-4 text-ink-soft" aria-hidden="true"></i>
+              <h3 class="text-lg font-semibold leading-snug">Inventario</h3>
+            </header>
+            <p class="mt-1 text-xs text-ink-soft">Estado del inventario.</p>
+            <p class="mt-3 flex-1 text-sm leading-relaxed">Contenido del card con altura flexible: el footer se apoya al final sin alturas fijas.</p>
+            <footer class="mt-3 text-xs text-ink-soft">última actualización: hace 1 minuto</footer>
+          </article>
+          <!-- tarjeta raised: White + sombra -->
+          <article class="flex flex-col rounded-lg bg-white p-5 shadow-card">
+            <header class="flex items-center gap-2">
+              <i data-feather="bar-chart-2" class="h-4 w-4 text-ink-soft" aria-hidden="true"></i>
+              <h3 class="text-lg font-semibold leading-snug">Estadísticas</h3>
+            </header>
+            <p class="mt-1 text-xs text-ink-soft">Métricas del sistema.</p>
+            <p class="mt-3 flex-1 text-sm leading-relaxed">Variante elevada: White sobre Ivory con <code class="rounded bg-dust-grey px-1 text-xs">shadow-card</code>.</p>
+            <footer class="mt-3 text-xs text-ink-soft">actualizado hace 5 minutos</footer>
+          </article>
+        </div>
+        <!-- Container queries (UC-6): contenido adaptado al slot, sin altura fija -->
+        <div class="@container rounded-lg bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold leading-snug">Métricas (container query)</h3>
+          <div class="mt-4 grid grid-cols-1 gap-4 @lg:grid-cols-3">
+            <div class="rounded-lg bg-surface-raised p-4">
+              <p class="text-xs text-ink-soft">Pedidos</p>
+              <p class="mt-1 text-2xl font-semibold tracking-tight">128</p>
+            </div>
+            <div class="rounded-lg bg-surface-raised p-4">
+              <p class="text-xs text-ink-soft">Clientes</p>
+              <p class="mt-1 text-2xl font-semibold tracking-tight">54</p>
+            </div>
+            <div class="rounded-lg bg-surface-raised p-4">
+              <p class="text-xs text-ink-soft">Alerta de stock</p>
+              <p class="mt-1 text-2xl font-semibold tracking-tight">4</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== Notificaciones y enlaces (UC-8 / UC-7) ========== -->
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold leading-snug tracking-tight">Notificaciones y enlaces</h2>
+        <div class="rounded-lg bg-white p-6 shadow-card">
+          <article class="flex items-center gap-3 border-b border-dust-grey pb-4">
+            <i data-feather="file-text" class="h-4 w-4 shrink-0 text-ink-soft" aria-hidden="true"></i>
+            <p class="flex-1 text-sm leading-relaxed">Tu informe semanal está listo.
+              <a href="#"
+                class="font-medium text-ink underline decoration-dust-grey underline-offset-4 transition hover:decoration-graphite focus-visible:shadow-focus-ring focus-visible:outline-none">Ver informe</a></p>
+          </article>
+          <article class="flex items-center gap-3 pt-4">
+            <i data-feather="package" class="h-4 w-4 shrink-0 text-ink-soft" aria-hidden="true"></i>
+            <p class="flex-1 text-sm leading-relaxed">Stock bajo en 4 productos.
+              <a href="#"
+                class="font-medium text-ink underline decoration-dust-grey underline-offset-4 transition hover:decoration-graphite focus-visible:shadow-focus-ring focus-visible:outline-none">Revisar</a></p>
+          </article>
+          <p class="mt-4 text-xs text-ink-soft">
+            Iconos decorativos con <code class="rounded bg-dust-grey px-1">aria-hidden="true"</code> (UC-8).
+            Enlaces: subrayado visible al hover, anillo de foco al navegar con teclado (UC-7).
+          </p>
+        </div>
+      </section>
+
+      <!-- ========== Dropdown (UC-2) ========== -->
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold leading-snug tracking-tight">Dropdown consolidado</h2>
+        <div class="rounded-lg bg-white p-6 shadow-card">
+          <p class="text-sm leading-relaxed">
+            Un único patrón (<code class="rounded bg-dust-grey px-1 text-xs">Alpine.data('dropdown')</code>) reutilizado por el
+            menú de usuario y las notificaciones (en la cabecera). Semántica: <code class="rounded bg-dust-grey px-1 text-xs">role="menu"</code> /
+            <code class="rounded bg-dust-grey px-1 text-xs">role="menuitem"</code>,
+            <code class="rounded bg-dust-grey px-1 text-xs">aria-expanded</code> / <code class="rounded bg-dust-grey px-1 text-xs">aria-controls</code>,
+            cierre con Escape y click fuera. Las notificaciones renderizan iconos con
+            <code class="rounded bg-dust-grey px-1 text-xs">x-for</code> y los re-renderizan con
+            <code class="rounded bg-dust-grey px-1 text-xs">x-effect="items; feather.replace()"</code> (UC-10/SB-6).
+            Probá los menús de la cabecera.
+          </p>
+        </div>
+      </section>
+
+      <!-- ========== Responsive (UC-6) ========== -->
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold leading-snug tracking-tight">Responsive</h2>
+        <div class="rounded-lg bg-white p-6 shadow-card">
+          <p class="text-sm leading-relaxed">
+            Enfoque mobile-first: las grillas de esta página colapsan a una columna en pantallas chicas
+            (<code class="rounded bg-dust-grey px-1 text-xs">grid-cols-1 sm:grid-cols-2 lg:grid-cols-3</code>)
+            y las tablas usan <code class="rounded bg-dust-grey px-1 text-xs">overflow-x-auto</code>.
+            Las tarjetas con <code class="rounded bg-dust-grey px-1 text-xs">@container</code> se adaptan a su slot.
+            Reducí la ventana para verlo.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ========== Footer (UC-9): texto claro sobre shadow grey ========== -->
+    <footer class="bg-shadow-grey text-ivory">
+      <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-6 text-xs sm:flex-row">
+        <p>Hecho con mate 🧉 por
+          <a href="https://osvaldo-zakowicz.netlify.app/"
+            class="underline decoration-on-dark underline-offset-4 transition hover:text-on-dark">Osvaldo Zakowicz</a></p>
+        <p>Iconos cortesía de
+          <a href="https://feathericons.com/"
+            class="underline decoration-on-dark underline-offset-4 transition hover:text-on-dark">Feather</a></p>
+      </div>
+    </footer>
+
+    <script>
+      // Seam de comportamiento (UC-2): un único patrón dropdown para todos los disparadores.
+      document.addEventListener("alpine:init", () => {
+        const dropdown = () => ({
+          open: false,
+          toggle() { this.open = !this.open; },
+          close() { this.open = false; },
+        });
+        Alpine.data("dropdown", dropdown);
+        // Extiende el patrón con la lista de notificaciones (UC-8).
+        Alpine.data("notifications", () => ({
+          ...dropdown(),
+          items: [
+            { id: 1, icon: "bell", text: "Tu informe semanal está listo.", href: "#" },
+            { id: 2, icon: "mail", text: "Un nuevo mensaje en la bandeja.", href: "#" },
+            { id: 3, icon: "alert-circle", text: "Stock bajo en 4 productos.", href: "#" },
+          ],
+        }));
+      });
+      // UC-10/SB-6: red de seguridad — tras inicializar Alpine, reemplaza iconos de regiones
+      // x-for/x-if que el feather.replace() de carga no alcanza. El x-effect por región
+      // cubre los re-renderes posteriores.
+      document.addEventListener("alpine:initialized", () => feather.replace());
+    </script>
+    <script>
+      feather.replace();
+    </script>
+  </body>
+</html>
