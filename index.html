@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- css -->
-    <link rel="stylesheet" href="./css/main.css" />
+    <link rel="stylesheet" href="./dist/main.css" />
 
     <!-- alpine.js -->
     <script
@@ -20,14 +20,10 @@
 
   <body>
     <main
-      class="panel"
-      x-data="{
-            menuOpen: false,
-            toggleMenu() { this.menuOpen = ! this.menuOpen},
-        }"
+      class="panel grid grid-rows-[10%_80%_10%] grid-areas-[header_content_footer]"
     >
       <!-- cabecera principal -->
-      <header class="header">
+      <header class="header grid-area-header">
         <button
           type="button"
           class="btn-menu"
@@ -39,20 +35,12 @@
         <div class="header__title">
           <h1 class="system">mi negocio</h1>
           <div class="header__actions">
-            <!-- dropdown usuario -->
+            <!-- dropdown usuario (UC-2: patrón único Alpine.data('dropdown')) -->
             <article
-              x-data="{
-                                open: false,
-                                toggle() {
-                                    this.open = this.open ? this.close() : true
-                                },
-                                close() {
-                                    this.open = false
-                                },
-                            }"
-              x-id="['dropdown-button']"
+              x-data="dropdown"
               @keydown.escape.prevent.stop="close()"
               @focusin.window="! $refs.panel.contains($event.target) && close()"
+              x-id="['dropdown-button']"
               class="dropdown-wrapper"
             >
               <i data-feather="user" class="icon"></i>
@@ -79,20 +67,12 @@
                 <a href="#" class="dropdown-wrapper__link">cerrar sesión</a>
               </div>
             </article>
-            <!-- dropdown notificaciones -->
+            <!-- dropdown notificaciones (UC-2 + UC-10/SB-6) -->
             <article
-              x-data="{
-                                open: false,
-                                toggle() {
-                                    this.open = this.open ? this.close() : true
-                                },
-                                close() {
-                                    this.open = false
-                                },
-                            }"
-              x-id="['dropdown-button']"
+              x-data="notifications"
               @keydown.escape.prevent.stop="close()"
               @focusin.window="! $refs.panel.contains($event.target) && close()"
+              @click.outside="toggle()"
               class="dropdown-wrapper"
             >
               <i data-feather="bell" class="icon"></i>
@@ -116,7 +96,7 @@
                 <!-- notification -->
                 <article class="notification">
                   <div class="notification__header">
-                    <id data-feather="mail" class="icon"></id>
+                    <i data-feather="mail" class="icon"></i>
                     <p>un nuevo mensaje!</p>
                   </div>
                   <a href="#" class="notification__action">ver</a>
@@ -128,7 +108,10 @@
       </header>
 
       <!-- menu lateral -->
-      <aside class="menu" :class="menuOpen ? '' : 'menu--closed' ">
+      <aside
+        class="menu absolute left-0 top-10 w-full md:w-64 h-screen md:h-auto bg-gray-800 text-white grid grid-rows-[auto_1_] grid-rows-nostroke transition-transform transform"
+        :class="menuOpen ? '' : 'menu--closed'"
+      >
         <header class="menu__header">
           <button
             type="button"
@@ -173,94 +156,102 @@
       </aside>
 
       <!-- contenido principal -->
-      <section class="content">
-        <article class="card card--md">
+      <section
+        class="content grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <!-- Sección 1: Overview + Metrics -->
+        <article class="card card--md h-64">
+          <header class="card__header">
+            <h2 class="card__title">Resumen</h2>
+            <p class="card__subtitle">Estadísticas generales.</p>
+          </header>
+          <section class="card__content">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <p class="text-2xl font-bold text-ink" id="stat-1">0</p>
+                <p class="text-sm text-ink-soft">Pedidos</p>
+              </div>
+              <div>
+                <p class="text-2xl font-bold text-ink" id="stat-2">0</p>
+                <p class="text-sm text-ink-soft">Clientes</p>
+              </div>
+              <div>
+                <p class="text-2xl font-bold text-ink" id="stat-3">0</p>
+                <p class="text-sm text-ink-soft">Productos</p>
+              </div>
+            </div>
+          </section>
+          <footer class="card__footer">
+            <span>actualizado hace 1 minuto</span>
+          </footer>
+        </article>
+
+        <!-- Sección 2: Inventory + Status Tags -->
+        <article class="card card--md h-64">
           <header class="card__header">
             <h2 class="card__title">Inventario</h2>
-            <i data-feather="clipboard" class="card__icon"></i>
             <p class="card__subtitle">Estado del inventario.</p>
           </header>
           <section class="card__content">
-            <span>contenido del card</span>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr>
+                    <th class="text-left py-2">Producto</th>
+                    <th class="text-left py-2">Cantidad</th>
+                    <th class="text-left py-2">Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b">
+                    <td class="py-2">Lápices</td>
+                    <td class="py-2">120</td>
+                    <td class="py-2"><span class="badge badge--status">Stock</span></td>
+                  </tr>
+                  <tr class="border-b">
+                    <td class="py-2">Papeleras</td>
+                    <td class="py-2">45</td>
+                    <td class="py-2"><span class="badge badge--status">Bajo</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </section>
           <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
+            <span>actualizado hace 1 minuto</span>
           </footer>
         </article>
 
-        <article class="card card--md">
-          <header class="card__header">
-            <h2 class="card__title">Notificaciones</h2>
-            <i data-feather="bell" class="card__icon"></i>
-            <p class="card__subtitle">Últimas notificaciones.</p>
-          </header>
-          <section class="card__content">
-            <span>contenido del card</span>
-          </section>
-          <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
-          </footer>
-        </article>
-
-        <article class="card">
-          <header class="card__header">
-            <h2 class="card__title">Productos</h2>
-            <i data-feather="box" class="card__icon"></i>
-            <p class="card__subtitle">Estado de productos.</p>
-          </header>
-          <section class="card__content">
-            <span>contenido del card</span>
-          </section>
-          <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
-          </footer>
-        </article>
-
-        <article class="card">
+        <!-- Sección 3: Clients + Badges -->
+        <article class="card h-64">
           <header class="card__header">
             <h2 class="card__title">Clientes</h2>
-            <i data-feather="users" class="card__icon"></i>
-            <p class="card__subtitle">Estado de los clientes.</p>
+            <p class="card__subtitle">Lista de clientes.</p>
           </header>
           <section class="card__content">
-            <span>contenido del card</span>
+            <div class="space-y-2">
+              <div>
+                <span class="font-medium">María García</span>
+                <span class="badge badge--success">Activo</span>
+              </div>
+              <div>
+                <span class="font parcial">Juan Pérez</span>
+                <span class="badge badge--warning">Pendiente</span>
+              </div>
+              <div>
+                <span class="font-medium">Roberto Sánchez</span>
+                <span class="badge badge--danger">Inactivo</span>
+              </div>
+            </div>
           </section>
           <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
-          </footer>
-        </article>
-
-        <article class="card">
-          <header class="card__header">
-            <h2 class="card__title">Proveedores</h2>
-            <i data-feather="truck" class="card__icon"></i>
-            <p class="card__subtitle">Estado de los proveedores.</p>
-          </header>
-          <section class="card__content">
-            <span>contenido del card</span>
-          </section>
-          <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
-          </footer>
-        </article>
-
-        <article class="card card--md card--lg">
-          <header class="card__header">
-            <h2 class="card__title">Estadisticas</h2>
-            <i data-feather="bar-chart-2" class="card__icon"></i>
-            <p class="card__subtitle">Estadisticas del sistema.</p>
-          </header>
-          <section class="card__content">
-            <span>contenido del card</span>
-          </section>
-          <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
+            <span>3 clientes activos</span>
           </footer>
         </article>
       </section>
 
       <!-- pie -->
-      <footer class="footer">
+      <footer class="footer grid grid-cols-3 gap-2 py-4">
         <span class="subtext"
           >Hecho con mate 🧉 por
           <a
@@ -279,8 +270,7 @@
           >Iconos cortesia de
           <a href="https://feathericons.com/" class="link" target="__blank"
             >Feather</a
-          ></span
-        >
+          ></span>
       </footer>
     </main>
 
