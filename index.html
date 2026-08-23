@@ -1,291 +1,567 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="./assets/icons/grid-graphite.svg"
+      type="image/svg+xml"
+    />
+    <title>Panel administrativo — mi negocio</title>
 
-    <!-- css -->
-    <link rel="stylesheet" href="./css/main.css" />
+    <!-- tailwind v4 — build output -->
+    <link rel="stylesheet" href="./dist/main.css" />
+
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+    </style>
 
     <!-- alpine.js -->
     <script
       defer
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
     ></script>
-    <!-- feather icons -->
-    <script src="https://unpkg.com/feather-icons"></script>
-
-    <title>Panel administrativo - Grid</title>
   </head>
 
-  <body>
-    <main
-      class="panel"
-      x-data="{
-            menuOpen: false,
-            toggleMenu() { this.menuOpen = ! this.menuOpen},
-        }"
-    >
-      <!-- cabecera principal -->
-      <header class="header">
-        <button
-          type="button"
-          class="btn-menu"
-          @click="toggleMenu"
-          title="abrir menu"
-        >
-          <i data-feather="menu" class="icon"></i>
-        </button>
-        <div class="header__title">
-          <h1 class="system">mi negocio</h1>
-          <div class="header__actions">
-            <!-- dropdown usuario -->
-            <article
-              x-data="{
-                                open: false,
-                                toggle() {
-                                    this.open = this.open ? this.close() : true
-                                },
-                                close() {
-                                    this.open = false
-                                },
-                            }"
-              x-id="['dropdown-button']"
-              @keydown.escape.prevent.stop="close()"
-              @focusin.window="! $refs.panel.contains($event.target) && close()"
-              class="dropdown-wrapper"
-            >
-              <i data-feather="user" class="icon"></i>
-              <button
-                type="button"
-                @click="toggle()"
-                :aria-expanded="open"
-                :aria-controls="$id('dropdown-button')"
-                class="dropdown-button"
-              >
-                <i data-feather="chevron-down" class="icon"></i>
-              </button>
-              <!-- dropdown content -->
-              <div
-                x-ref="panel"
-                x-show="open"
-                :id="$id('dropdown-button')"
-                @click.outside="toggle()"
-                class="dropdown-wrapper__content"
-              >
-                <a href="#" class="dropdown-wrapper__link">mi perfil</a>
-                <a href="#" class="dropdown-wrapper__link">configuración</a>
-                <hr class="dropdown-wrapper__divider" />
-                <a href="#" class="dropdown-wrapper__link">cerrar sesión</a>
-              </div>
-            </article>
-            <!-- dropdown notificaciones -->
-            <article
-              x-data="{
-                                open: false,
-                                toggle() {
-                                    this.open = this.open ? this.close() : true
-                                },
-                                close() {
-                                    this.open = false
-                                },
-                            }"
-              x-id="['dropdown-button']"
-              @keydown.escape.prevent.stop="close()"
-              @focusin.window="! $refs.panel.contains($event.target) && close()"
-              class="dropdown-wrapper"
-            >
-              <i data-feather="bell" class="icon"></i>
-              <button
-                type="button"
-                @click="toggle()"
-                :aria-expanded="open"
-                :aria-controls="$id('dropdown-button')"
-                class="dropdown-button"
-              >
-                <i data-feather="chevron-down" class="icon"></i>
-              </button>
-              <!-- dropdown content -->
-              <div
-                x-ref="panel"
-                x-show="open"
-                :id="$id('dropdown-button')"
-                @click.outside="toggle()"
-                class="dropdown-wrapper__content dropdown-wrapper__content--lg"
-              >
-                <!-- notification -->
-                <article class="notification">
-                  <div class="notification__header">
-                    <id data-feather="mail" class="icon"></id>
-                    <p>un nuevo mensaje!</p>
-                  </div>
-                  <a href="#" class="notification__action">ver</a>
-                </article>
-              </div>
-            </article>
-          </div>
-        </div>
-      </header>
-
-      <!-- menu lateral -->
-      <aside class="menu" :class="menuOpen ? '' : 'menu--closed' ">
-        <header class="menu__header">
+  <body
+    x-data="{ menuOpen: false, toggleMenu() { this.menuOpen = !this.menuOpen } }"
+    class="bg-surface text-ink"
+  >
+    <!-- ========== cabecera ========== -->
+    <header class="bg-graphite text-on-dark">
+      <div
+        class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
+      >
+        <div class="flex items-center gap-3">
           <button
             type="button"
-            class="btn-menu"
-            @click="toggleMenu"
-            title="cerrar menú"
+            @click="toggleMenu()"
+            aria-label="Abrir menú de navegación"
+            :aria-expanded="menuOpen"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-shadow-grey focus-visible:outline-none focus-visible:shadow-focus-ring"
           >
-            <i data-feather="x" class="icon"></i>
+            <img
+              src="./assets/icons/menu-white.svg"
+              alt="menu"
+              class="h-5 w-5"
+              aria-hidden="true"
+            />
           </button>
-        </header>
-        <div class="menu__title">
-          <span class="menu__text">menu</span>
+          <div class="flex items-center gap-2">
+            <img
+              src="./assets/icons/grid-white.svg"
+              alt="logo"
+              class="h-6 w-6"
+              aria-hidden="true"
+            />
+            <span class="text-xl font-semibold tracking-tight">mi negocio</span>
+          </div>
         </div>
-        <section class="menu__content">
-          <ul class="menu__list">
-            <li class="menu__item">
-              <i data-feather="home" class="icon"></i>
-              inicio
+
+        <div class="flex items-center gap-2">
+          <!-- dropdown usuario -->
+          <div
+            x-data="dropdown"
+            @keydown.escape.window="close()"
+            @click.outside="close()"
+            class="relative"
+          >
+            <button
+              type="button"
+              @click="toggle()"
+              :aria-expanded="open"
+              :aria-controls="$id('menu')"
+              aria-label="Abrir menú de usuario"
+              class="inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-shadow-grey focus-visible:outline-none focus-visible:shadow-focus-ring"
+            >
+              <img
+                src="./assets/icons/user-white.svg"
+                alt="user"
+                class="h-4.5 w-4.5"
+                aria-hidden="true"
+              />
+            </button>
+            <div
+              role="menu"
+              x-show="open"
+              x-cloak
+              :id="$id('menu')"
+              class="absolute right-0 z-10 mt-2 w-48 rounded-xl border border-dust-grey bg-white p-1 text-ink shadow-popover"
+            >
+              <a
+                role="menuitem"
+                href="#"
+                class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:outline-none focus-visible:shadow-focus-ring"
+              >
+                <img
+                  src="./assets/icons/user-graphite.svg"
+                  alt=""
+                  aria-hidden="true"
+                  class="mt-0.5 h-4 w-4 shrink-0"
+                />
+                <span class="flex-1 leading-relaxed">mi perfil</span>
+              </a>
+              <a
+                role="menuitem"
+                href="#"
+                class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:outline-none focus-visible:shadow-focus-ring"
+              >
+                <img
+                  src="./assets/icons/settings-graphite.svg"
+                  alt=""
+                  aria-hidden="true"
+                  class="mt-0.5 h-4 w-4 shrink-0"
+                />
+                <span class="flex-1 leading-relaxed">configuración</span>
+              </a>
+              <hr class="my-1 border-dust-grey" />
+              <a
+                role="menuitem"
+                href="#"
+                class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:outline-none focus-visible:shadow-focus-ring"
+              >
+                <img
+                  src="./assets/icons/log-out-graphite.svg"
+                  alt=""
+                  aria-hidden="true"
+                  class="mt-0.5 h-4 w-4 shrink-0"
+                />
+                <span class="flex-1 leading-relaxed">cerrar sesión</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- dropdown notificaciones -->
+          <div
+            x-data="notifications"
+            @keydown.escape.window="close()"
+            @click.outside="close()"
+            class="relative"
+          >
+            <button
+              type="button"
+              @click="toggle()"
+              :aria-expanded="open"
+              :aria-controls="$id('menu')"
+              aria-label="Ver notificaciones"
+              class="relative inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-shadow-grey focus-visible:outline-none focus-visible:shadow-focus-ring"
+            >
+              <img
+                src="./assets/icons/bell-white.svg"
+                alt="bell"
+                class="h-4.5 w-4.5"
+                aria-hidden="true"
+              />
+              <span
+                x-show="items.length"
+                x-text="items.length"
+                class="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-ink"
+              ></span>
+            </button>
+            <div
+              role="menu"
+              x-show="open"
+              x-cloak
+              :id="$id('menu')"
+              class="absolute right-0 z-10 mt-2 w-80 rounded-xl border border-dust-grey bg-white p-1 text-ink shadow-popover"
+            >
+              <template x-for="n in items" :key="n.id">
+                <a
+                  role="menuitem"
+                  :href="n.href"
+                  class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:outline-none focus-visible:shadow-focus-ring"
+                >
+                  <img
+                    :src="n.icon"
+                    alt=""
+                    aria-hidden="true"
+                    class="mt-0.5 h-4 w-4 shrink-0"
+                  />
+                  <span x-text="n.text" class="flex-1 leading-relaxed"></span>
+                </a>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="mx-auto flex max-w-6xl gap-6 px-4 py-6">
+      <!-- ========== menu lateral ========== -->
+      <aside
+        x-cloak
+        :class="menuOpen ? 'flex' : 'hidden'"
+        class="fixed inset-y-0 left-0 z-20 w-64 flex-col bg-shadow-grey text-on-dark md:sticky md:top-6 md:z-auto md:h-fit md:w-56 md:rounded-xl md:shadow-card"
+      >
+        <div class="flex items-center justify-between px-4 py-3 md:hidden">
+          <span class="text-sm font-semibold uppercase tracking-wide text-ivory"
+            >menú</span
+          >
+          <button
+            type="button"
+            @click="toggleMenu()"
+            aria-label="Cerrar menú de navegación"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-graphite focus-visible:outline-none focus-visible:shadow-focus-ring"
+          >
+            <img
+              src="./assets/icons/x-white.svg"
+              alt=""
+              class="h-4 w-4"
+              aria-hidden="true"
+            />
+          </button>
+        </div>
+        <nav aria-label="Navegación principal">
+          <ul class="space-y-1 p-2">
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 rounded-md bg-graphite px-3 py-2 text-sm font-medium text-on-dark focus-visible:outline-none focus-visible:shadow-focus-ring"
+              >
+                <img
+                  src="./assets/icons/home-white.svg"
+                  alt="inicio"
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                />
+                inicio
+              </a>
             </li>
-            <li class="menu__item">
-              <i data-feather="clipboard" class="icon"></i>
-              inventario
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-ivory transition hover:bg-graphite focus-visible:outline-none focus-visible:shadow-focus-ring"
+              >
+                <img
+                  src="./assets/icons/clipboard-white.svg"
+                  alt=""
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                />
+                inventario
+              </a>
             </li>
-            <li class="menu__item">
-              <i data-feather="box" class="icon"></i>
-              productos
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-ivory transition hover:bg-graphite focus-visible:outline-none focus-visible:shadow-focus-ring"
+              >
+                <img
+                  src="./assets/icons/package-white.svg"
+                  alt=""
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                />
+                productos
+              </a>
             </li>
-            <li class="menu__item">
-              <i data-feather="users" class="icon"></i>
-              clientes
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-ivory transition hover:bg-graphite focus-visible:outline-none focus-visible:shadow-focus-ring"
+              >
+                <img
+                  src="./assets/icons/users-white.svg"
+                  alt=""
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                />
+                clientes
+              </a>
             </li>
-            <li class="menu__item">
-              <i data-feather="truck" class="icon"></i>
-              proveedores
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-ivory transition hover:bg-graphite focus-visible:outline-none focus-visible:shadow-focus-ring"
+              >
+                <img
+                  src="./assets/icons/truck-white.svg"
+                  alt=""
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                />
+                proveedores
+              </a>
             </li>
-            <li class="menu__item">
-              <i data-feather="settings" class="icon"></i>
-              ajustes
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-ivory transition hover:bg-graphite focus-visible:outline-none focus-visible:shadow-focus-ring"
+              >
+                <img
+                  src="./assets/icons/settings-white.svg"
+                  alt=""
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                />
+                ajustes
+              </a>
             </li>
           </ul>
-        </section>
+        </nav>
       </aside>
 
-      <!-- contenido principal -->
-      <section class="content">
-        <article class="card card--md">
-          <header class="card__header">
-            <h2 class="card__title">Inventario</h2>
-            <i data-feather="clipboard" class="card__icon"></i>
-            <p class="card__subtitle">Estado del inventario.</p>
-          </header>
-          <section class="card__content">
-            <span>contenido del card</span>
-          </section>
-          <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
-          </footer>
-        </article>
+      <!-- fondo oscuro al abrir el menú en mobile -->
+      <div
+        x-show="menuOpen"
+        x-cloak
+        @click="toggleMenu()"
+        class="fixed inset-0 z-10 bg-shadow-grey/50 md:hidden"
+      ></div>
 
-        <article class="card card--md">
-          <header class="card__header">
-            <h2 class="card__title">Notificaciones</h2>
-            <i data-feather="bell" class="card__icon"></i>
-            <p class="card__subtitle">Últimas notificaciones.</p>
-          </header>
-          <section class="card__content">
-            <span>contenido del card</span>
-          </section>
-          <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
-          </footer>
-        </article>
+      <!-- ========== contenido principal ========== -->
+      <main class="min-w-0 flex-1 space-y-6">
+        <!-- resumen -->
+        <section class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div class="rounded-lg bg-white p-4 shadow-card">
+            <p class="text-xs text-ink-soft">pedidos</p>
+            <p class="mt-1 text-2xl font-semibold tracking-tight">128</p>
+          </div>
+          <div class="rounded-lg bg-white p-4 shadow-card">
+            <p class="text-xs text-ink-soft">clientes</p>
+            <p class="mt-1 text-2xl font-semibold tracking-tight">54</p>
+          </div>
+          <div class="rounded-lg bg-white p-4 shadow-card">
+            <p class="text-xs text-ink-soft">alerta de stock</p>
+            <p class="mt-1 text-2xl font-semibold tracking-tight">4</p>
+          </div>
+        </section>
 
-        <article class="card">
-          <header class="card__header">
-            <h2 class="card__title">Productos</h2>
-            <i data-feather="box" class="card__icon"></i>
-            <p class="card__subtitle">Estado de productos.</p>
-          </header>
-          <section class="card__content">
-            <span>contenido del card</span>
-          </section>
-          <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
-          </footer>
-        </article>
+        <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <!-- inventario -->
+          <article class="flex flex-col rounded-lg bg-white p-5 shadow-card">
+            <header>
+              <h2 class="text-lg font-semibold leading-snug">inventario</h2>
+              <p class="text-xs text-ink-soft">estado del inventario</p>
+            </header>
+            <div class="mt-3 flex-1 overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead>
+                  <tr
+                    class="border-b border-dust-grey text-xs uppercase tracking-wide text-ink-soft"
+                  >
+                    <th class="py-2 pr-4 font-semibold">producto</th>
+                    <th class="py-2 pr-4 font-semibold">cantidad</th>
+                    <th class="py-2 font-semibold">estado</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-dust-grey">
+                  <tr>
+                    <td class="py-2 pr-4">lápices</td>
+                    <td class="py-2 pr-4">120</td>
+                    <td class="py-2">
+                      <span
+                        class="inline-flex items-center gap-1.5 rounded-full bg-tuscan-sun px-2.5 py-0.5 text-xs font-medium text-ink"
+                      >
+                        <span
+                          class="h-1.5 w-1.5 rounded-full bg-ink"
+                          aria-hidden="true"
+                        ></span>
+                        stock
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-4">papeleras</td>
+                    <td class="py-2 pr-4">45</td>
+                    <td class="py-2">
+                      <span
+                        class="inline-flex items-center gap-1.5 rounded-full bg-graphite px-2.5 py-0.5 text-xs font-medium text-on-dark"
+                      >
+                        <span
+                          class="h-1.5 w-1.5 rounded-full bg-on-dark"
+                          aria-hidden="true"
+                        ></span>
+                        bajo
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="mt-3 text-xs text-ink-soft">
+              actualizado hace 1 minuto
+            </footer>
+          </article>
 
-        <article class="card">
-          <header class="card__header">
-            <h2 class="card__title">Clientes</h2>
-            <i data-feather="users" class="card__icon"></i>
-            <p class="card__subtitle">Estado de los clientes.</p>
-          </header>
-          <section class="card__content">
-            <span>contenido del card</span>
-          </section>
-          <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
-          </footer>
-        </article>
+          <!-- clientes -->
+          <article class="flex flex-col rounded-lg bg-white p-5 shadow-card">
+            <header>
+              <h2 class="text-lg font-semibold leading-snug">clientes</h2>
+              <p class="text-xs text-ink-soft">lista de clientes</p>
+            </header>
+            <div class="mt-3 flex-1 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium">maría garcía</span>
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-full bg-tuscan-sun px-2.5 py-0.5 text-xs font-medium text-ink"
+                >
+                  <span
+                    class="h-1.5 w-1.5 rounded-full bg-ink"
+                    aria-hidden="true"
+                  ></span>
+                  activo
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium">juan pérez</span>
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-full bg-dust-grey px-2.5 py-0.5 text-xs font-medium text-ink"
+                >
+                  <span
+                    class="h-1.5 w-1.5 rounded-full bg-ink-soft"
+                    aria-hidden="true"
+                  ></span>
+                  pendiente
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium">roberto sánchez</span>
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-full bg-graphite px-2.5 py-0.5 text-xs font-medium text-on-dark"
+                >
+                  <span
+                    class="h-1.5 w-1.5 rounded-full bg-on-dark"
+                    aria-hidden="true"
+                  ></span>
+                  inactivo
+                </span>
+              </div>
+            </div>
+            <footer class="mt-3 text-xs text-ink-soft">
+              3 clientes activos
+            </footer>
+          </article>
+        </section>
 
-        <article class="card">
-          <header class="card__header">
-            <h2 class="card__title">Proveedores</h2>
-            <i data-feather="truck" class="card__icon"></i>
-            <p class="card__subtitle">Estado de los proveedores.</p>
+        <!-- pedidos recientes -->
+        <section class="rounded-lg bg-white p-5 shadow-card">
+          <header>
+            <h2 class="text-lg font-semibold leading-snug">
+              pedidos recientes
+            </h2>
+            <p class="text-xs text-ink-soft">últimos movimientos</p>
           </header>
-          <section class="card__content">
-            <span>contenido del card</span>
-          </section>
-          <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
-          </footer>
-        </article>
+          <div class="mt-3 divide-y divide-dust-grey">
+            <div class="flex items-center gap-3 py-3">
+              <img
+                src="./assets/icons/file-text-graphite.svg"
+                alt=""
+                class="h-4 w-4"
+                aria-hidden="true"
+              />
+              <p class="flex-1 text-sm leading-relaxed">
+                pedido #1042 despachado a maría garcía.
+              </p>
+              <a
+                href="#"
+                class="text-sm font-medium text-ink underline decoration-dust-grey underline-offset-4 transition hover:decoration-graphite focus-visible:outline-none focus-visible:shadow-focus-ring"
+                >ver</a
+              >
+            </div>
+            <div class="flex items-center gap-3 py-3">
+              <img
+                src="./assets/icons/package-graphite.svg"
+                alt=""
+                class="h-4 w-4"
+                aria-hidden="true"
+              />
+              <p class="flex-1 text-sm leading-relaxed">
+                stock bajo en 4 productos.
+              </p>
+              <a
+                href="#"
+                class="text-sm font-medium text-ink underline decoration-dust-grey underline-offset-4 transition hover:decoration-graphite focus-visible:outline-none focus-visible:shadow-focus-ring"
+                >revisar</a
+              >
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
 
-        <article class="card card--md card--lg">
-          <header class="card__header">
-            <h2 class="card__title">Estadisticas</h2>
-            <i data-feather="bar-chart-2" class="card__icon"></i>
-            <p class="card__subtitle">Estadisticas del sistema.</p>
-          </header>
-          <section class="card__content">
-            <span>contenido del card</span>
-          </section>
-          <footer class="card__footer">
-            <span>última actualización: hace 1 minuto.</span>
-          </footer>
-        </article>
-      </section>
-
-      <!-- pie -->
-      <footer class="footer">
-        <span class="subtext"
-          >Hecho con mate 🧉 por
+    <!-- ========== pie ========== -->
+    <footer class="bg-shadow-grey text-ivory">
+      <div
+        class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-6 text-xs sm:flex-row"
+      >
+        <p>
+          hecho con mate 🧉 por
           <a
             href="https://osvaldo-zakowicz.netlify.app/"
-            class="link"
-            target="__blank"
-            >Osvaldo Zakowicz</a
+            target="_blank"
+            rel="noopener"
+            class="underline decoration-on-dark underline-offset-4 transition hover:text-on-dark"
+            >osvaldo zakowicz</a
           >
-        </span>
-        <span
-          class="subtext"
-          x-data="{ message: 'I ❤️ Alpine' }"
-          x-text="message"
-        ></span>
-        <span class="subtext"
-          >Iconos cortesia de
-          <a href="https://feathericons.com/" class="link" target="__blank"
-            >Feather</a
-          ></span
-        >
-      </footer>
-    </main>
+        </p>
+        <p>
+          ver
+          <a
+            href="./components.html"
+            target="_blank"
+            rel="noopener"
+            class="underline decoration-on-dark underline-offset-4 transition hover:text-on-dark"
+            >componentes</a
+          >
+        </p>
+        <p>
+          iconos cortesía de
+          <a
+            href="https://feathericons.com/"
+            target="_blank"
+            rel="noopener"
+            class="underline decoration-on-dark underline-offset-4 transition hover:text-on-dark"
+            >feather</a
+          >
+        </p>
+      </div>
+    </footer>
 
     <script>
-      feather.replace();
+      // registro de componentes alpine antes de que escanee el dom
+      document.addEventListener('alpine:init', () => {
+        // factory: cada x-data="dropdown" recibe su propio estado independiente
+        const dropdown = () => ({
+          open: false,
+          toggle() {
+            this.open = !this.open;
+          },
+          close() {
+            this.open = false;
+          },
+        });
+
+        Alpine.data('dropdown', dropdown);
+
+        // extiende el mismo patrón sumando la lista de notificaciones
+        Alpine.data('notifications', () => ({
+          ...dropdown(),
+          items: [
+            {
+              id: 1,
+              icon: './assets/icons/bell-graphite.svg',
+              text: 'tu informe semanal está listo.',
+              href: '#',
+            },
+            {
+              id: 2,
+              icon: './assets/icons/mail-graphite.svg',
+              text: 'un nuevo mensaje en la bandeja.',
+              href: '#',
+            },
+            {
+              id: 3,
+              icon: './assets/icons/alert-circle-graphite.svg',
+              text: 'stock bajo en 4 productos.',
+              href: '#',
+            },
+          ],
+        }));
+      });
     </script>
   </body>
 </html>

@@ -1,0 +1,15 @@
+# Carpeta de orquestación (herramientas locales)
+.atl/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores / IDE
+.vscode/
+.idea/
+*.swp
+
+# Node tooling (Tailwind CSS CLI)
+node_modules/
+dist/
