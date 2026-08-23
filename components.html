@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="./dist/main.css" />
     <!-- alpine.js (CDN, como el proyecto actual) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- feather icons (CDN) -->
-    <script src="https://unpkg.com/feather-icons"></script>
     <title>Showcase de componentes — Monochrome Harmony</title>
   </head>
   <body class="bg-surface text-ink">
@@ -16,7 +14,7 @@
     <header class="bg-graphite text-on-dark">
       <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <div class="flex items-center gap-2">
-          <i data-feather="grid" class="h-6 w-6" aria-hidden="true"></i>
+          <img src="./assets/icons/grid-white.svg" alt="" class="h-6 w-6" aria-hidden="true" />
           <span class="text-xl font-semibold tracking-tight">mi negocio</span>
         </div>
         <div class="flex items-center gap-2">
@@ -25,7 +23,7 @@
             <button type="button" @click="toggle()" :aria-expanded="open" :aria-controls="$id('menu')"
               aria-label="Abrir menú de usuario"
               class="inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-shadow-grey active:bg-ink-soft focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_var(--color-on-dark)]">
-              <i data-feather="user" class="h-[18px] w-[18px]" aria-hidden="true"></i>
+              <img src="./assets/icons/user-white.svg" alt="" class="h-[18px] w-[18px]" aria-hidden="true" />
             </button>
             <div role="menu" x-show="open" :id="$id('menu')"
               class="absolute right-0 z-10 mt-2 w-48 rounded-xl border border-dust-grey bg-on-dark p-1 text-ink shadow-popover">
@@ -40,15 +38,15 @@
             <button type="button" @click="toggle()" :aria-expanded="open" :aria-controls="$id('menu')"
               aria-label="Ver notificaciones"
               class="relative inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-shadow-grey active:bg-ink-soft focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_var(--color-on-dark)]">
-              <i data-feather="bell" class="h-[18px] w-[18px]" aria-hidden="true"></i>
+              <img src="./assets/icons/bell-white.svg" alt="" class="h-[18px] w-[18px]" aria-hidden="true" />
               <span class="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-ink" x-text="items.length"></span>
             </button>
-            <div role="menu" x-show="open" :id="$id('menu')" x-effect="items; feather.replace()"
+            <div role="menu" x-show="open" :id="$id('menu')"
               class="absolute right-0 z-10 mt-2 w-80 rounded-xl border border-dust-grey bg-on-dark p-1 text-ink shadow-popover">
               <template x-for="n in items" :key="n.id">
                 <a role="menuitem" :href="n.href"
                   class="flex items-start gap-2 rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">
-                  <i :data-feather="n.icon" aria-hidden="true" class="mt-0.5 h-4 w-4 shrink-0 text-ink-soft"></i>
+                  <img :src="n.icon" alt="" aria-hidden="true" class="mt-0.5 h-4 w-4 shrink-0" />
                   <span x-text="n.text" class="flex-1 leading-relaxed"></span>
                 </a>
               </template>
@@ -65,7 +63,8 @@
         <h1 class="text-2xl font-semibold leading-snug tracking-tight">Monochrome Harmony</h1>
         <p class="text-sm leading-relaxed">
           Sistema de diseño estático sobre Tailwind CSS v4. Tokens en <code class="rounded bg-dust-grey px-1 text-xs">css/main.css</code>
-          (@theme), markup portable con utilitarios, Alpine solo para comportamiento y Feather para iconos.
+          (@theme), markup portable con utilitarios, Alpine solo para comportamiento e iconos SVG locales
+          en <code class="rounded bg-dust-grey px-1 text-xs">assets/icons/</code>.
           Pares de contraste conforme a DT-3 (WCAG 2.1 AA).
         </p>
       </section>
@@ -169,7 +168,7 @@
             <!-- icon-only con aria-label (UC-4) -->
             <button type="button" aria-label="Agregar producto"
               class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-graphite text-on-dark transition hover:bg-shadow-grey active:opacity-80 focus-visible:shadow-focus-ring focus-visible:outline-none">
-              <i data-feather="plus" class="h-4 w-4" aria-hidden="true"></i>
+              <img src="./assets/icons/plus-white.svg" alt="" class="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
           <p class="mt-4 text-xs text-ink-soft">
@@ -210,7 +209,7 @@
           <!-- tarjeta default: Dust Grey (surface-raised) -->
           <article class="flex flex-col rounded-lg bg-surface-raised p-5 shadow-card">
             <header class="flex items-center gap-2">
-              <i data-feather="clipboard" class="h-4 w-4 text-ink-soft" aria-hidden="true"></i>
+              <img src="./assets/icons/clipboard-graphite.svg" alt="" class="h-4 w-4" aria-hidden="true" />
               <h3 class="text-lg font-semibold leading-snug">Inventario</h3>
             </header>
             <p class="mt-1 text-xs text-ink-soft">Estado del inventario.</p>
@@ -220,7 +219,7 @@
           <!-- tarjeta raised: White + sombra -->
           <article class="flex flex-col rounded-lg bg-white p-5 shadow-card">
             <header class="flex items-center gap-2">
-              <i data-feather="bar-chart-2" class="h-4 w-4 text-ink-soft" aria-hidden="true"></i>
+              <img src="./assets/icons/bar-chart-2-graphite.svg" alt="" class="h-4 w-4" aria-hidden="true" />
               <h3 class="text-lg font-semibold leading-snug">Estadísticas</h3>
             </header>
             <p class="mt-1 text-xs text-ink-soft">Métricas del sistema.</p>
@@ -253,13 +252,13 @@
         <h2 class="text-xl font-semibold leading-snug tracking-tight">Notificaciones y enlaces</h2>
         <div class="rounded-lg bg-white p-6 shadow-card">
           <article class="flex items-center gap-3 border-b border-dust-grey pb-4">
-            <i data-feather="file-text" class="h-4 w-4 shrink-0 text-ink-soft" aria-hidden="true"></i>
+            <img src="./assets/icons/file-text-graphite.svg" alt="" class="h-4 w-4 shrink-0" aria-hidden="true" />
             <p class="flex-1 text-sm leading-relaxed">Tu informe semanal está listo.
               <a href="#"
                 class="font-medium text-ink underline decoration-dust-grey underline-offset-4 transition hover:decoration-graphite focus-visible:shadow-focus-ring focus-visible:outline-none">Ver informe</a></p>
           </article>
           <article class="flex items-center gap-3 pt-4">
-            <i data-feather="package" class="h-4 w-4 shrink-0 text-ink-soft" aria-hidden="true"></i>
+            <img src="./assets/icons/package-graphite.svg" alt="" class="h-4 w-4 shrink-0" aria-hidden="true" />
             <p class="flex-1 text-sm leading-relaxed">Stock bajo en 4 productos.
               <a href="#"
                 class="font-medium text-ink underline decoration-dust-grey underline-offset-4 transition hover:decoration-graphite focus-visible:shadow-focus-ring focus-visible:outline-none">Revisar</a></p>
@@ -280,9 +279,9 @@
             menú de usuario y las notificaciones (en la cabecera). Semántica: <code class="rounded bg-dust-grey px-1 text-xs">role="menu"</code> /
             <code class="rounded bg-dust-grey px-1 text-xs">role="menuitem"</code>,
             <code class="rounded bg-dust-grey px-1 text-xs">aria-expanded</code> / <code class="rounded bg-dust-grey px-1 text-xs">aria-controls</code>,
-            cierre con Escape y click fuera. Las notificaciones renderizan iconos con
-            <code class="rounded bg-dust-grey px-1 text-xs">x-for</code> y los re-renderizan con
-            <code class="rounded bg-dust-grey px-1 text-xs">x-effect="items; feather.replace()"</code> (UC-10/SB-6).
+            cierre con Escape y click fuera. Las notificaciones renderizan iconos SVG locales con
+            <code class="rounded bg-dust-grey px-1 text-xs">x-for</code> vinculando la ruta en
+            <code class="rounded bg-dust-grey px-1 text-xs">:src</code> (UC-10/SB-6).
             Probá los menús de la cabecera.
           </p>
         </div>
@@ -325,22 +324,16 @@
         });
         Alpine.data("dropdown", dropdown);
         // Extiende el patrón con la lista de notificaciones (UC-8).
+        // Los iconos son SVG locales: cada item referencia su ruta en assets/icons/.
         Alpine.data("notifications", () => ({
           ...dropdown(),
           items: [
-            { id: 1, icon: "bell", text: "Tu informe semanal está listo.", href: "#" },
-            { id: 2, icon: "mail", text: "Un nuevo mensaje en la bandeja.", href: "#" },
-            { id: 3, icon: "alert-circle", text: "Stock bajo en 4 productos.", href: "#" },
+            { id: 1, icon: "./assets/icons/bell-graphite.svg", text: "Tu informe semanal está listo.", href: "#" },
+            { id: 2, icon: "./assets/icons/mail-graphite.svg", text: "Un nuevo mensaje en la bandeja.", href: "#" },
+            { id: 3, icon: "./assets/icons/alert-circle-graphite.svg", text: "Stock bajo en 4 productos.", href: "#" },
           ],
         }));
       });
-      // UC-10/SB-6: red de seguridad — tras inicializar Alpine, reemplaza iconos de regiones
-      // x-for/x-if que el feather.replace() de carga no alcanza. El x-effect por región
-      // cubre los re-renderes posteriores.
-      document.addEventListener("alpine:initialized", () => feather.replace());
-    </script>
-    <script>
-      feather.replace();
     </script>
   </body>
 </html>
