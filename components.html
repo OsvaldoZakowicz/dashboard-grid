@@ -27,10 +27,22 @@
             </button>
             <div role="menu" x-show="open" :id="$id('menu')"
               class="absolute right-0 z-10 mt-2 w-48 rounded-xl border border-dust-grey bg-on-dark p-1 text-ink shadow-popover">
-              <a role="menuitem" href="#" class="block rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">mi perfil</a>
-              <a role="menuitem" href="#" class="block rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">configuración</a>
+              <a role="menuitem" href="#"
+                class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">
+                <img src="./assets/icons/user-graphite.svg" alt="" aria-hidden="true" class="mt-0.5 h-4 w-4 shrink-0" />
+                <span class="flex-1 leading-relaxed">mi perfil</span>
+              </a>
+              <a role="menuitem" href="#"
+                class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">
+                <img src="./assets/icons/settings-graphite.svg" alt="" aria-hidden="true" class="mt-0.5 h-4 w-4 shrink-0" />
+                <span class="flex-1 leading-relaxed">configuración</span>
+              </a>
               <hr class="my-1 border-dust-grey" />
-              <a role="menuitem" href="#" class="block rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">cerrar sesión</a>
+              <a role="menuitem" href="#"
+                class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-dust-grey focus-visible:shadow-focus-ring focus-visible:outline-none">
+                <img src="./assets/icons/log-out-graphite.svg" alt="" aria-hidden="true" class="mt-0.5 h-4 w-4 shrink-0" />
+                <span class="flex-1 leading-relaxed">cerrar sesión</span>
+              </a>
             </div>
           </div>
           <!-- Dropdown notificaciones (UC-2 + UC-10/SB-6: x-for + x-effect re-render) -->
