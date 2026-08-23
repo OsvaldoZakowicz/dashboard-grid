@@ -187,7 +187,7 @@
       <!-- ========== menu lateral ========== -->
       <aside
         x-cloak
-        :class="menuOpen ? 'flex' : 'hidden md:flex'"
+        :class="menuOpen ? 'flex' : 'hidden'"
         class="fixed inset-y-0 left-0 z-20 w-64 flex-col bg-shadow-grey text-on-dark md:sticky md:top-6 md:z-auto md:h-fit md:w-56 md:rounded-xl md:shadow-card"
       >
         <div class="flex items-center justify-between px-4 py-3 md:hidden">
@@ -200,7 +200,12 @@
             aria-label="Cerrar menú de navegación"
             class="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-graphite focus-visible:outline-none focus-visible:shadow-focus-ring"
           >
-            <i data-feather="x" class="h-4 w-4" aria-hidden="true"></i>
+            <img
+              src="./assets/icons/x-white.svg"
+              alt=""
+              class="h-4 w-4"
+              aria-hidden="true"
+            />
           </button>
         </div>
         <nav aria-label="Navegación principal">
